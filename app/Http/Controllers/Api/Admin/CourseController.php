@@ -21,6 +21,7 @@ class CourseController
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
+            'icon' => 'nullable|string|in:robot,dron,programming,pacman',
             'age_from' => 'required|integer|min:3',
             'age_to' => 'required|integer|gte:age_from',
             'description' => 'required|string',
@@ -30,6 +31,11 @@ class CourseController
         ]);
 
         $validated['slug'] = Str::slug($validated['name']) . '-' . uniqid();
+
+        // Устанавливаем иконку по умолчанию, если не выбрана
+        if (empty($validated['icon'])) {
+            $validated['icon'] = 'programming';
+        }
 
         $course = Course::create($validated);
 
@@ -51,6 +57,7 @@ class CourseController
     {
         $validated = $request->validate([
             'name' => 'string|max:255',
+            'icon' => 'nullable|string|in:robot,dron,programming,pacman',
             'age_from' => 'integer|min:3',
             'age_to' => 'integer|gte:age_from',
             'description' => 'string',
@@ -82,6 +89,17 @@ class CourseController
         return response()->json([
             'success' => true,
             'message' => 'Курс удалён'
+        ]);
+    }
+
+    /**
+     * Получить список доступных иконок для фронтенда
+     */
+    public function getIcons()
+    {
+        return response()->json([
+            'success' => true,
+            'data' => CourseResource::getAvailableIcons(),
         ]);
     }
 }

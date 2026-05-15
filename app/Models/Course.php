@@ -8,6 +8,7 @@ class Course extends Model
 {
     protected $fillable = [
         'name',
+        'icon',           // НОВОЕ ПОЛЕ: robot, dron, programming, pacman
         'slug',
         'age_from',
         'age_to',
@@ -46,6 +47,40 @@ class Course extends Model
     public function getAgeRangeAttribute(): string
     {
         return "{$this->age_from}-{$this->age_to} лет";
+    }
+
+     /**
+     * Получить имя файла иконки
+     */
+    public function getIconFileAttribute(): string
+    {
+        return match($this->icon) {
+            'robot' => 'robot.svg',
+            'dron' => 'dron.svg',
+            'pacman' => 'pacman.svg',
+            default => 'programming.svg',
+        };
+    }
+
+    /**
+     * Получить полный URL иконки
+     */
+    public function getIconUrlAttribute(): string
+    {
+        return "/icons/courses/{$this->icon_file}";
+    }
+
+    /**
+     * Получить читаемое название иконки
+     */
+    public function getIconLabelAttribute(): string
+    {
+        return match($this->icon) {
+            'robot' => 'Робототехника',
+            'dron' => 'Дроны',
+            'pacman' => 'Игры',
+            default => 'Программирование',
+        };
     }
 
     public function getFormattedPriceAttribute(): string

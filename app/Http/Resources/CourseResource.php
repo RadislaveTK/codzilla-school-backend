@@ -11,6 +11,10 @@ class CourseResource extends BaseResource
         return array_merge(parent::toArray($request), [
             // Основные поля
             'name' => $this->name,
+            'icon' => $this->icon,                      // robot, dron, programming, pacman
+            'icon_file' => $this->icon_file,            // robot.svg
+            'icon_url' => $this->icon_url,              // /icons/courses/robot.svg
+            'icon_label' => $this->icon_label,          // Робототехника
             'slug' => $this->slug,
             'age_from' => $this->age_from,
             'age_to' => $this->age_to,
@@ -23,7 +27,7 @@ class CourseResource extends BaseResource
 
             // НОВОЕ: группы курса
             'groups' => GroupResource::collection($this->whenLoaded('groups')),
-            'active_groups' => $this->whenLoaded('groups', function() {
+            'active_groups' => $this->whenLoaded('groups', function () {
                 return GroupResource::collection(
                     $this->groups->where('status', 'active')
                 );
@@ -35,12 +39,12 @@ class CourseResource extends BaseResource
             // Статистика
             'students_count' => $this->whenCounted('students'),
             'groups_count' => $this->whenCounted('groups'),
-            'active_groups_count' => $this->whenLoaded('groups', function() {
+            'active_groups_count' => $this->whenLoaded('groups', function () {
                 return $this->groups->where('status', 'active')->count();
             }),
 
             // Данные из pivot
-            'pivot_enrolled_at' => $this->whenPivotLoaded('course_student', function() {
+            'pivot_enrolled_at' => $this->whenPivotLoaded('course_student', function () {
                 return $this->pivot->enrolled_at?->format('d.m.Y');
             }),
         ]);
@@ -56,12 +60,24 @@ class CourseResource extends BaseResource
                     '11-14' => 'Средняя школа',
                     '15-18' => 'Старшая школа',
                 ],
-                'price_ranges' => [
-                    '0-5000' => 'до 5 000 ₽',
-                    '5000-10000' => '5 000 - 10 000 ₽',
-                    '10000+' => 'от 10 000 ₽',
-                ],
+            ],
+            'stats' => [
+                'total_courses' => method_exists($resource, 'total') ? $resource->total() : $resource->count(),
+                'active_courses' => $resource->where('is_active', true)->count(),
             ],
         ]);
+    }
+
+    /**
+     * Список доступных иконок для выбора (для фронтенда)
+     */
+    public static function getAvailableIcons(): array
+    {
+        return [
+            ['value' => 'robot', 'label' => 'Робототехника', 'file' => 'robot.svg'],
+            ['value' => 'dron', 'label' => 'Дроны', 'file' => 'dron.svg'],
+            ['value' => 'programming', 'label' => 'Программирование', 'file' => 'programming.svg'],
+            ['value' => 'pacman', 'label' => 'Игры', 'file' => 'pacman.svg'],
+        ];
     }
 }

@@ -20,6 +20,7 @@ Route::prefix('v1')->group(function () {
     });
 
     // ========== Авторизация ==========
+    Route::post('/auth/register', [AuthController::class, 'register']);
     Route::post('/auth/login', [AuthController::class, 'login']);
 
     // ========== Защищённые маршруты ==========
@@ -32,6 +33,7 @@ Route::prefix('v1')->group(function () {
         Route::middleware('admin')->prefix('admin')->group(function () {
 
             // Курсы
+            Route::get('/courses/icons', [AdminCourseController::class, 'getIcons']);
             Route::apiResource('courses', AdminCourseController::class);
 
             // Группы

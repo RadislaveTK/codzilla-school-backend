@@ -13,6 +13,7 @@ class CoursesTableSeeder extends Seeder
         $courses = [
             [
                 'name' => 'Программирование на Python',
+                'icon' => 'programming',
                 'age_from' => 10,
                 'age_to' => 14,
                 'description' => 'Курс по основам программирования на языке Python. Изучим переменные, циклы, функции и создадим свои первые проекты.',
@@ -22,6 +23,7 @@ class CoursesTableSeeder extends Seeder
             ],
             [
                 'name' => 'Создание сайтов (HTML/CSS)',
+                'icon' => 'programming',
                 'age_from' => 9,
                 'age_to' => 13,
                 'description' => 'Научим создавать красивые и современные веб-сайты с нуля. Изучим HTML, CSS и основы дизайна.',
@@ -31,6 +33,7 @@ class CoursesTableSeeder extends Seeder
             ],
             [
                 'name' => 'Разработка игр на Scratch',
+                'icon' => 'pacman',
                 'age_from' => 7,
                 'age_to' => 10,
                 'description' => 'Создаём свои первые игры в визуальной среде Scratch. Развиваем логику и креативное мышление.',
@@ -39,22 +42,24 @@ class CoursesTableSeeder extends Seeder
                 'is_active' => true,
             ],
             [
-                'name' => 'Веб-разработка на JavaScript',
+                'name' => 'Программирование дронов',
+                'icon' => 'dron',
                 'age_from' => 12,
                 'age_to' => 17,
-                'description' => 'Продвинутый курс по созданию интерактивных веб-сайтов. Изучим JavaScript, React и работу с сервером.',
+                'description' => 'Управление и программирование дронов.',
                 'price' => 20000,
                 'duration_weeks' => 10,
                 'is_active' => true,
             ],
             [
-                'name' => 'Основы Java для школьников',
-                'age_from' => 13,
-                'age_to' => 17,
-                'description' => 'Изучаем объектно-ориентированное программирование на Java. Подготовка к ОГЭ и ЕГЭ по информатике.',
+                'name' => 'Робототехника',
+                'icon' => 'robot',
+                'age_from' => 10,
+                'age_to' => 15,
+                'description' => 'Сборка и программирование роботов.',
                 'price' => 18000,
                 'duration_weeks' => 12,
-                'is_active' => false,
+                'is_active' => true,
             ],
         ];
 

@@ -21,7 +21,7 @@ class UserResource extends JsonResource
             'avatar' => $this->getAvatarUrl(), // если есть метод в модели
 
             // Загруженные связи (только если есть)
-            'children' => StudentResource::collection($this->whenLoaded('children')),
+            'children' => $this->whenLoaded('children', fn () => StudentResource::collection($this->children)),
             'children_count' => $this->whenCounted('children'),
 
             // Скрываем email для не-админов (если нужно)
@@ -34,9 +34,11 @@ class UserResource extends JsonResource
      */
     public static function collection($resource)
     {
+        $total = method_exists($resource, 'total') ? $resource->total() : $resource->count();
+
         return parent::collection($resource)->additional([
             'stats' => [
-                'total' => $resource->total() ?? $resource->count(),
+                'total' => $total,
                 'admins' => $resource->where('role', 'admin')->count(),
                 'parents' => $resource->where('role', 'parent')->count(),
             ]
