@@ -33,8 +33,7 @@ class Student extends Model
         return $this->belongsTo(Course::class, 'current_course_id');
     }
 
-    // Все курсы (история) — через группы или напрямую
-    // Вариант 1: через группы (РЕКОМЕНДУЮ)
+    // Все курсы (история) — через группы
     public function coursesViaGroups(): BelongsToMany
     {
         return $this->belongsToMany(Course::class, 'groups', 'id', 'course_id')
