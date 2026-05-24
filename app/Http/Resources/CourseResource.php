@@ -20,6 +20,7 @@ class CourseResource extends BaseResource
             'age_to' => $this->age_to,
             'age_range' => $this->age_range,
             'description' => $this->description,
+            'basic_skills' => $this->basic_skills ?? [],
             'price' => $this->price,
             'formatted_price' => $this->formatted_price,
             'duration_weeks' => $this->duration_weeks,
@@ -59,6 +60,12 @@ class CourseResource extends BaseResource
                     '7-10' => 'Младшая школа',
                     '11-14' => 'Средняя школа',
                     '15-18' => 'Старшая школа',
+                ],
+                'directions' => [
+                    'pacman' => 'Игры',
+                    'robot' => 'Робототехника',
+                    'dron' => 'Дроны',
+                    'programming' => 'Программирование',
                 ],
             ],
             'stats' => [

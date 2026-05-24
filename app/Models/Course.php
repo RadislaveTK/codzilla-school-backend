@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Course extends Model
 {
@@ -13,6 +14,7 @@ class Course extends Model
         'age_from',
         'age_to',
         'description',
+        'basic_skills',
         'price',
         'duration_weeks',
         'is_active'
@@ -23,6 +25,7 @@ class Course extends Model
         'is_active' => 'boolean',
         'age_from' => 'integer',
         'age_to' => 'integer',
+        'basic_skills' => 'array',
     ];
 
     // Связи
@@ -36,6 +39,11 @@ class Course extends Model
     public function lessons()
     {
         return $this->hasMany(Lesson::class)->orderBy('order');
+    }
+
+    public function groups(): HasMany
+    {
+        return $this->hasMany(Group::class);
     }
 
     public function activeStudents()
@@ -85,6 +93,6 @@ class Course extends Model
 
     public function getFormattedPriceAttribute(): string
     {
-        return number_format($this->price, 0, ',', ' ') . ' ₽';
+        return number_format($this->price, 0, ',', ' ') . ' ₸';
     }
 }

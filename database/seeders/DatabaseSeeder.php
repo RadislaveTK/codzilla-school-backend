@@ -13,6 +13,7 @@ class DatabaseSeeder extends Seeder
             CoursesTableSeeder::class,
             StudentsTableSeeder::class,
             GroupsTableSeeder::class,
+            DemoGroupSeeder::class,
             LessonsTableSeeder::class,
             SchedulesTableSeeder::class,
         ]);

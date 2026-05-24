@@ -11,9 +11,21 @@ class CourseController
     // Список всех активных курсов
     public function index(Request $request)
     {
-        $courses = Course::where('is_active', true)
-            ->withCount('students')
-            ->paginate($request->get('per_page', 12));
+        $query = Course::where('is_active', true)
+            ->withCount('students');
+
+        if ($request->filled('age_group') && preg_match('/^(\d+)-(\d+)$/', $request->age_group, $matches)) {
+            $query->where('age_from', '<=', (int) $matches[2])
+                ->where('age_to', '>=', (int) $matches[1]);
+        }
+
+        $direction = $request->query('direction', $request->query('icon'));
+
+        if (in_array($direction, ['robot', 'dron', 'programming', 'pacman'], true)) {
+            $query->where('icon', $direction);
+        }
+
+        $courses = $query->paginate($request->get('per_page', 12));
 
         return CourseResource::collection($courses);
     }
