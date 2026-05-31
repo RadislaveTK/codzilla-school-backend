@@ -19,7 +19,7 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => ['http://localhost:3000', 'https://codzilla-school-backend.local'],
+    'allowed_origins' => ['http://localhost:3000', 'https://codzilla-school-backend.local', 'https://codzilla-school.up.railway.app'],
 
     'allowed_origins_patterns' => [],
 
