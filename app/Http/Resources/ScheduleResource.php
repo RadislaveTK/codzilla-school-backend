@@ -12,8 +12,8 @@ class ScheduleResource extends BaseResource
             // Основные поля
             'lesson_id' => $this->lesson_id,
             'group_id' => $this->group_id, // НОВОЕ
-            'start_time' => $this->start_time?->toISOString(),
-            'end_time' => $this->end_time?->toISOString(),
+            'start_time' => $this->start_time?->format('Y-m-d\TH:i'),
+            'end_time' => $this->end_time?->format('Y-m-d\TH:i'),
             'start_time_formatted' => $this->start_time?->format('d.m.Y H:i'),
             'end_time_formatted' => $this->end_time?->format('H:i'),
             'date_formatted' => $this->start_time?->format('d.m.Y'),

@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\Admin\GroupController;
 use App\Http\Controllers\Api\Admin\AttendanceController;
 use App\Http\Controllers\Api\Admin\LessonController as AdminLessonController;
 use App\Http\Controllers\Api\Admin\NotificationSettingController;
+use App\Http\Controllers\Api\Admin\StudentController as AdminStudentController;
 use App\Http\Controllers\Api\Admin\UserController as AdminUserController;
 use App\Http\Controllers\Api\Parent\ChildController;
 use App\Http\Controllers\Api\Public\StatisticsController;
@@ -50,6 +51,9 @@ Route::prefix('v1')->group(function () {
 
             // Users
             Route::apiResource('users', AdminUserController::class);
+
+            // Students
+            Route::apiResource('students', AdminStudentController::class);
 
             // Lessons with group schedule
             Route::get('/lessons', [AdminLessonController::class, 'index']);

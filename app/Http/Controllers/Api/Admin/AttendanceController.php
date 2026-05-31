@@ -190,11 +190,21 @@ class AttendanceController
      */
     public function studentHistory(Student $student, Request $request)
     {
+        $statsQuery = $student->attendances();
+        $stats = [
+            'total' => (clone $statsQuery)->count(),
+            'present' => (clone $statsQuery)->where('status', 'present')->count(),
+            'absent' => (clone $statsQuery)->where('status', 'absent')->count(),
+            'late' => (clone $statsQuery)->where('status', 'late')->count(),
+        ];
+
         $attendances = $student->attendances()
             ->with(['schedule.lesson.course', 'schedule.group'])
             ->orderBy('marked_at', 'desc')
             ->paginate($request->get('per_page', 20));
 
-        return AttendanceResource::collection($attendances);
+        return AttendanceResource::collection($attendances)->additional([
+            'stats' => $stats,
+        ]);
     }
 }
