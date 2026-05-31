@@ -11,7 +11,8 @@ class Lesson extends Model
         'title',
         'order',
         'description',
-        'materials'
+        'materials',
+        'homework',
     ];
 
     protected $casts = [

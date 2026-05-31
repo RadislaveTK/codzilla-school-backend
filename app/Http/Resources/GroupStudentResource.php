@@ -32,11 +32,19 @@ class GroupStudentResource extends BaseResource
 
     public static function collection($resource)
     {
+        if (!$resource || $resource instanceof \Illuminate\Http\Resources\MissingValue) {
+            return parent::collection(collect());
+        }
+
+        $collection = method_exists($resource, 'items')
+            ? collect($resource->items())
+            : collect($resource);
+
         return parent::collection($resource)->additional([
             'stats' => [
-                'active_count' => $resource->where('status', 'active')->count(),
-                'graduated_count' => $resource->where('status', 'graduated')->count(),
-                'dropped_count' => $resource->where('status', 'dropped')->count(),
+                'active_count' => $collection->where('status', 'active')->count(),
+                'graduated_count' => $collection->where('status', 'graduated')->count(),
+                'dropped_count' => $collection->where('status', 'dropped')->count(),
             ],
         ]);
     }

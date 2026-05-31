@@ -53,6 +53,12 @@ class AuthController
             ]);
         }
 
+        if (!$user->is_active) {
+            throw ValidationException::withMessages([
+                'email' => ['Аккаунт отключен администратором'],
+            ]);
+        }
+
         // Удаляем старые токены (опционально)
         $user->tokens()->delete();
 

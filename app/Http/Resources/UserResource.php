@@ -14,6 +14,7 @@ class UserResource extends JsonResource
             'email' => $this->email,
             'phone' => $this->phone,
             'role' => $this->role,
+            'is_active' => $this->is_active,
 
             // Вычисляемые поля
             'is_admin' => $this->role === 'admin',
@@ -36,11 +37,14 @@ class UserResource extends JsonResource
     {
         $total = method_exists($resource, 'total') ? $resource->total() : $resource->count();
 
+        $collection = method_exists($resource, 'items') ? collect($resource->items()) : $resource;
+
         return parent::collection($resource)->additional([
             'stats' => [
                 'total' => $total,
-                'admins' => $resource->where('role', 'admin')->count(),
-                'parents' => $resource->where('role', 'parent')->count(),
+                'admins' => $collection->where('role', 'admin')->count(),
+                'parents' => $collection->where('role', 'parent')->count(),
+                'active' => $collection->where('is_active', true)->count(),
             ]
         ]);
     }

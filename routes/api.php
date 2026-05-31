@@ -6,7 +6,9 @@ use App\Http\Controllers\Api\Public\ApplicationController;
 use App\Http\Controllers\Api\Admin\CourseController as AdminCourseController;
 use App\Http\Controllers\Api\Admin\GroupController;
 use App\Http\Controllers\Api\Admin\AttendanceController;
+use App\Http\Controllers\Api\Admin\LessonController as AdminLessonController;
 use App\Http\Controllers\Api\Admin\NotificationSettingController;
+use App\Http\Controllers\Api\Admin\UserController as AdminUserController;
 use App\Http\Controllers\Api\Parent\ChildController;
 use App\Http\Controllers\Api\Public\StatisticsController;
 use Illuminate\Support\Facades\Route;
@@ -45,6 +47,17 @@ Route::prefix('v1')->group(function () {
             Route::post('/groups/{group}/add-student', [GroupController::class, 'addStudent']);
             Route::delete('/groups/{group}/remove-student/{student}', [GroupController::class, 'removeStudent']);
             Route::get('/groups/{group}/students', [GroupController::class, 'students']);
+
+            // Users
+            Route::apiResource('users', AdminUserController::class);
+
+            // Lessons with group schedule
+            Route::get('/lessons', [AdminLessonController::class, 'index']);
+            Route::post('/lessons', [AdminLessonController::class, 'store']);
+            Route::get('/lessons/{schedule}', [AdminLessonController::class, 'show']);
+            Route::put('/lessons/{schedule}', [AdminLessonController::class, 'update']);
+            Route::patch('/lessons/{schedule}', [AdminLessonController::class, 'update']);
+            Route::delete('/lessons/{schedule}', [AdminLessonController::class, 'destroy']);
 
             // Notification settings
             Route::get('/notification-settings', [NotificationSettingController::class, 'show']);

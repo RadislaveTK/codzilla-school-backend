@@ -23,7 +23,9 @@ class ScheduleResource extends BaseResource
             // Связи
             'lesson' => new LessonResource($this->whenLoaded('lesson')),
             'group' => new GroupResource($this->whenLoaded('group')),
-            'attendances' => AttendanceResource::collection($this->whenLoaded('attendances')),
+            'attendances' => $this->whenLoaded('attendances', function () {
+                return AttendanceResource::collection($this->attendances);
+            }),
 
             // Вычисляемые поля
             'title' => $this->title, // из мутатора
@@ -49,10 +51,18 @@ class ScheduleResource extends BaseResource
 
     public static function collection($resource)
     {
+        if (!$resource || $resource instanceof \Illuminate\Http\Resources\MissingValue) {
+            return parent::collection(collect());
+        }
+
+        $collection = method_exists($resource, 'items')
+            ? collect($resource->items())
+            : collect($resource);
+
         return parent::collection($resource)->additional([
             'grouped_by_date' => true,
-            'upcoming_count' => $resource->filter(fn($s) => $s->start_time?->isFuture())->count(),
-            'past_count' => $resource->filter(fn($s) => $s->start_time?->isPast())->count(),
+            'upcoming_count' => $collection->filter(fn($schedule) => $schedule->start_time?->isFuture())->count(),
+            'past_count' => $collection->filter(fn($schedule) => $schedule->start_time?->isPast())->count(),
         ]);
     }
 }

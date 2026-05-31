@@ -27,7 +27,9 @@ class CourseResource extends BaseResource
             'is_active' => $this->is_active,
 
             // НОВОЕ: группы курса
-            'groups' => GroupResource::collection($this->whenLoaded('groups')),
+            'groups' => $this->whenLoaded('groups', function () {
+                return GroupResource::collection($this->groups);
+            }),
             'active_groups' => $this->whenLoaded('groups', function () {
                 return GroupResource::collection(
                     $this->groups->where('status', 'active')
@@ -35,7 +37,9 @@ class CourseResource extends BaseResource
             }),
 
             // Уроки
-            'lessons' => LessonResource::collection($this->whenLoaded('lessons')),
+            'lessons' => $this->whenLoaded('lessons', function () {
+                return LessonResource::collection($this->lessons);
+            }),
 
             // Статистика
             'students_count' => $this->whenCounted('students'),
@@ -53,6 +57,14 @@ class CourseResource extends BaseResource
 
     public static function collection($resource)
     {
+        if (!$resource || $resource instanceof \Illuminate\Http\Resources\MissingValue) {
+            return parent::collection(collect());
+        }
+
+        $collection = method_exists($resource, 'items')
+            ? collect($resource->items())
+            : collect($resource);
+
         return parent::collection($resource)->additional([
             'filters' => [
                 'age_groups' => [
@@ -70,7 +82,7 @@ class CourseResource extends BaseResource
             ],
             'stats' => [
                 'total_courses' => method_exists($resource, 'total') ? $resource->total() : $resource->count(),
-                'active_courses' => $resource->where('is_active', true)->count(),
+                'active_courses' => $collection->where('is_active', true)->count(),
             ],
         ]);
     }

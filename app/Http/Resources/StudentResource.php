@@ -26,16 +26,22 @@ class StudentResource extends BaseResource
             'current_course' => new CourseResource($this->whenLoaded('currentCourse')),
 
             // НОВОЕ: группы
-            'groups' => GroupResource::collection($this->whenLoaded('groups')),
+            'groups' => $this->whenLoaded('groups', function () {
+                return GroupResource::collection($this->groups);
+            }),
             'current_group' => $this->whenLoaded('groups', function() {
                 $currentGroup = $this->groups->firstWhere('pivot.status', 'active');
                 return $currentGroup ? new GroupResource($currentGroup) : null;
             }),
 
-            'group_membership' => GroupStudentResource::collection($this->whenLoaded('pivotGroups')),
+            'group_membership' => $this->whenLoaded('pivotGroups', function () {
+                return GroupStudentResource::collection($this->pivotGroups);
+            }),
 
             // Прогресс
-            'progress' => ProgressResource::collection($this->whenLoaded('progress')),
+            'progress' => $this->whenLoaded('progress', function () {
+                return ProgressResource::collection($this->progress);
+            }),
 
             // Статистика посещаемости
             'attendance_stats' => $this->when($request->routeIs('students.show'), function() {
@@ -67,14 +73,22 @@ class StudentResource extends BaseResource
 
     public static function collection($resource)
     {
+        if (!$resource || $resource instanceof \Illuminate\Http\Resources\MissingValue) {
+            return parent::collection(collect());
+        }
+
+        $collection = method_exists($resource, 'items')
+            ? collect($resource->items())
+            : collect($resource);
+
         return parent::collection($resource)->additional([
             'stats' => [
-                'total_active' => $resource->where('status', 'active')->count(),
-                'total_graduated' => $resource->where('status', 'graduated')->count(),
-                'total_left' => $resource->where('status', 'left')->count(),
+                'total_active' => $collection->where('status', 'active')->count(),
+                'total_graduated' => $collection->where('status', 'graduated')->count(),
+                'total_left' => $collection->where('status', 'left')->count(),
                 'gender_ratio' => [
-                    'male' => $resource->where('gender', 'male')->count(),
-                    'female' => $resource->where('gender', 'female')->count(),
+                    'male' => $collection->where('gender', 'male')->count(),
+                    'female' => $collection->where('gender', 'female')->count(),
                 ],
             ],
         ]);

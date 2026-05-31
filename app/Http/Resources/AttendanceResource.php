@@ -42,14 +42,22 @@ class AttendanceResource extends BaseResource
 
     public static function collection($resource)
     {
+        if (!$resource || $resource instanceof \Illuminate\Http\Resources\MissingValue) {
+            return parent::collection(collect());
+        }
+
+        $collection = method_exists($resource, 'items')
+            ? collect($resource->items())
+            : collect($resource);
+
         return parent::collection($resource)->additional([
             'summary' => [
-                'present_count' => $resource->where('status', 'present')->count(),
-                'absent_count' => $resource->where('status', 'absent')->count(),
-                'late_count' => $resource->where('status', 'late')->count(),
-                'total_count' => $resource->count(),
-                'attendance_rate' => $resource->count() > 0
-                    ? round(($resource->where('status', 'present')->count() / $resource->count()) * 100, 2)
+                'present_count' => $collection->where('status', 'present')->count(),
+                'absent_count' => $collection->where('status', 'absent')->count(),
+                'late_count' => $collection->where('status', 'late')->count(),
+                'total_count' => $collection->count(),
+                'attendance_rate' => $collection->count() > 0
+                    ? round(($collection->where('status', 'present')->count() / $collection->count()) * 100, 2)
                     : 0,
             ],
         ]);
